@@ -1,3 +1,4 @@
 /env
 /logs
 /train
+/__pycache__
