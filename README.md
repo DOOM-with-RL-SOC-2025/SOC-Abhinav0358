@@ -21,7 +21,7 @@ Here's how to get started:
 
 **First, grab the code:**
 ```bash
-git clone https://github.com/DOOM-with-RL-SOC-2025/SOC-Abhinav0358.git
+git clone https://github.com/Abhinav0358/SOC-Abhinav.git
 cd SOC-Abhinav0358
 ```
 
@@ -41,6 +41,11 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
+**Get vizdoom:**
+```bash
+git clone https://github.com/mwdymuch/ViZDoom
+```
+
 If that doesn't work for some reason, you can install everything manually:
 ```bash
 pip install stable-baselines3[extra]
@@ -50,35 +55,28 @@ pip install opencv-python
 pip install numpy
 ```
 
-## How everything is organized
-
-I've tried to keep the code structure pretty clean. Here's what does what:
-
-```
-SOC-Abhinav0358/
-├── vizdoomenv.py            # This wraps ViZDoom to work with modern RL libraries
-├── train.py                 # Main training script - run this to start training
-├── test.py                  # Load a trained model and watch it play
-├── trainNlog.py             # Handles saving checkpoints during training
-├── basic-tut.py             # Simple tutorial script I used for learning
-├── ViZDoom/                 # The actual game engine and scenarios
-│   └── scenarios/           # Different game levels (basic.cfg, defend_the_center.cfg)
-├── train/                   # Your trained models get saved here
-└── logs/                    # TensorBoard logs for monitoring training
-```
 
 ## Actually running the thing
 
 **To start training:**
+for scenario 1
 ```bash
 python train.py
 ```
-
+for defend the center scenario
+```bash
+python defendTrain.py
+```
 That's it! The AI will start learning. You'll see output showing how it's doing - at first the rewards will be pretty negative (it's bad at the game), but they should improve over time.
 
 **To test a trained model:**
+scenario 1
 ```bash
 python test.py
+```
+defend the center scenario
+```bash
+python defendTest.py
 ```
 
 This loads a saved model and lets you watch it play. It's honestly pretty satisfying to see the AI that was once shooting at walls now actually hitting targets.
@@ -98,21 +96,6 @@ tensorboard --logdir=logs/
 ```
 Then open http://localhost:6006 in your browser. You'll get nice graphs showing how the AI's performance improves over time.
 
-## Tweaking the training
-
-If you want to experiment with different settings, here are the main knobs you can turn:
-
-```python
-model = PPO('CnnPolicy', env,
-    learning_rate=0.0001,     # How fast the AI learns (smaller = more stable)
-    n_steps=4096,             # How many game steps before updating the brain
-    total_timesteps=100000,   # Total training duration
-    verbose=1                 # How much output you want to see
-)
-```
-
-I've found these settings work pretty well, but feel free to experiment. If training seems unstable (rewards jumping around wildly), try reducing the learning rate. If it's learning too slowly, you can increase it a bit.
-
 ## Results I've gotten
 
 After about 40,000 training steps on the basic scenario, my AI can hit targets pretty consistently - around 89% success rate, which is way better than my own DOOM skills honestly.
@@ -130,17 +113,5 @@ The network has two "heads":
 - **Critic**: Estimates how good the current situation is
 
 The PPO algorithm balances exploration (trying new things) with exploitation (doing what it knows works). It's pretty elegant - the AI naturally learns to be more conservative when it's doing well and more exploratory when it's struggling.
-
-## If you want to contribute
-
-I'd love to see what improvements people come up with! Some ideas I've been thinking about:
-- More complex DOOM scenarios
-- Different neural network architectures  
-- Comparison with other RL algorithms
-- Better reward shaping
-
-If you want to contribute, just fork the repo, make your changes, and send a pull request. The usual GitHub workflow.
-
----
 
 *Built with curiosity and way too much coffee ☕*  
