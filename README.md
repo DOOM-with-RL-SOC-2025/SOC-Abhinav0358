@@ -1,273 +1,146 @@
-# 🎮 ViZDoom Reinforcement Learning with PPO
+# Teaching AI to Play DOOM 🎮
 
-Train AI agents to play DOOM using Deep Reinforcement Learning! This project implements PPO (Proximal Policy Optimization) with Actor-Critic networks to teach an AI agent to master various DOOM scenarios.
+This is my project where I train an AI agent to play the classic DOOM game using reinforcement learning. It's been a fun journey watching the AI go from randomly shooting walls to actually becoming decent at the game!
 
-## 🚀 Features
+The core idea is pretty straightforward - I give the AI screenshots of the game, and it learns to take actions (move left, move right, shoot) to maximize its score. I'm using PPO (Proximal Policy Optimization) which is currently one of the best algorithms for this kind of visual learning.
 
-- **Multiple DOOM Scenarios**: Basic, Defend the Center, and more
-- **PPO Algorithm**: State-of-the-art reinforcement learning
-- **CNN Policy**: Convolutional Neural Networks for visual processing  
-- **Real-time Training**: Watch your agent learn in real-time
-- **Model Checkpointing**: Save and resume training progress
-- **Performance Evaluation**: Test trained agents and measure performance
-- **Gymnasium Integration**: Modern RL environment standards
+## What makes this cool
 
-## 🛠 Installation
+I've implemented several things that I'm pretty excited about:
+- The AI can handle different DOOM scenarios (I started with basic aiming, then moved to defending a position)
+- It uses a convolutional neural network to "see" the game just like humans do
+- You can actually watch it train in real-time, which is mesmerizing
+- Everything saves automatically so you don't lose progress if something crashes
+- The whole thing follows modern RL standards, so it's easy to extend
 
-### Prerequisites
+## Getting it running
 
-- Python 3.8 or higher
-- Windows/Linux/macOS
-- At least 4GB RAM
-- GPU recommended (but not required)
+You'll need Python 3.8 or newer. I've tested this on Windows but it should work fine on Mac/Linux too. Fair warning - training can be pretty memory intensive, so 4GB+ RAM is recommended. A GPU helps a lot but isn't strictly necessary.
 
-### Step-by-Step Installation
+Here's how to get started:
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/DOOM-with-RL-SOC-2025/SOC-Abhinav0358.git
-   cd SOC-Abhinav0358
-   ```
+**First, grab the code:**
+```bash
+git clone https://github.com/DOOM-with-RL-SOC-2025/SOC-Abhinav0358.git
+cd SOC-Abhinav0358
+```
 
-2. **Create Virtual Environment**
-   ```bash
-   python -m venv env
-   
-   # Activate on Windows
-   env\Scripts\activate
-   
-   # Activate on Linux/Mac
-   source env/bin/activate
-   ```
+**Set up a virtual environment** (trust me, you want this):
+```bash
+python -m venv env
 
-3. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+# On Windows:
+env\Scripts\activate
 
-   Or install manually:
-   ```bash
-   pip install stable-baselines3[extra]
-   pip install gymnasium
-   pip install vizdoom
-   pip install opencv-python
-   pip install numpy
-   ```
+# On Mac/Linux:
+source env/bin/activate
+```
 
-## 📁 Project Structure
+**Install the dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+If that doesn't work for some reason, you can install everything manually:
+```bash
+pip install stable-baselines3[extra]
+pip install gymnasium
+pip install vizdoom
+pip install opencv-python
+pip install numpy
+```
+
+## How everything is organized
+
+I've tried to keep the code structure pretty clean. Here's what does what:
 
 ```
 SOC-Abhinav0358/
-├── README.md                 # This file
-├── requirements.txt          # Python dependencies
-├── vizdoomenv.py            # Custom ViZDoom environment wrapper
-├── train.py                 # Main training script
-├── test.py                  # Model evaluation script
-├── trainNlog.py             # Custom callback for logging
-├── basic-tut.py             # Basic ViZDoom tutorial
-├── defendEnv.py             # Defend the Center environment
-├── defendTrain.py           # Training script for defend scenario
-├── defendTest.py            # Testing script for defend scenario
-├── ViZDoom/                 # ViZDoom game engine and scenarios
-│   ├── scenarios/           # Game scenario configurations
-│   │   ├── basic.cfg
-│   │   ├── defend_the_center.cfg
-│   │   └── ...
-│   └── ...
-├── train/                   # Saved model checkpoints
-│   └── train_defend/
-└── logs/                    # Training logs for TensorBoard
-    └── log_defend/
+├── vizdoomenv.py            # This wraps ViZDoom to work with modern RL libraries
+├── train.py                 # Main training script - run this to start training
+├── test.py                  # Load a trained model and watch it play
+├── trainNlog.py             # Handles saving checkpoints during training
+├── basic-tut.py             # Simple tutorial script I used for learning
+├── ViZDoom/                 # The actual game engine and scenarios
+│   └── scenarios/           # Different game levels (basic.cfg, defend_the_center.cfg)
+├── train/                   # Your trained models get saved here
+└── logs/                    # TensorBoard logs for monitoring training
 ```
 
-## 🎯 Usage
+## Actually running the thing
 
-### Basic Training
-
-Train an agent on the basic DOOM scenario:
-
+**To start training:**
 ```bash
 python train.py
 ```
 
-### Advanced Training
+That's it! The AI will start learning. You'll see output showing how it's doing - at first the rewards will be pretty negative (it's bad at the game), but they should improve over time.
 
-Train on different scenarios:
-
+**To test a trained model:**
 ```bash
-# Defend the Center scenario
-python defendTrain.py
-
-# Custom training with parameters
-python -c "
-from vizdoomenv import ViZDoomGym
-from stable_baselines3 import PPO
-
-env = ViZDoomGym(render=False)
-model = PPO('CnnPolicy', env, learning_rate=0.0001, verbose=1)
-model.learn(total_timesteps=50000)
-model.save('my_doom_agent')
-"
-```
-
-### Testing Trained Models
-
-```bash
-# Test basic scenario agent
 python test.py
-
-# Test defend scenario agent  
-python defendTest.py
 ```
 
-## 🏋️ Training
+This loads a saved model and lets you watch it play. It's honestly pretty satisfying to see the AI that was once shooting at walls now actually hitting targets.
 
-### Training Parameters
+## What to expect during training
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `total_timesteps` | 100,000 | Total training steps |
-| `learning_rate` | 0.0001 | Neural network learning rate |
-| `n_steps` | 4096 | Steps per policy update |
-| `check_freq` | 10,000 | Model checkpoint frequency |
+The training process is pretty interesting to watch. I've set it up to train for 100,000 steps by default, which takes about an hour on my machine.
 
-### Monitor Training Progress
+Here's roughly what happens:
+- **First 10,000 steps**: The AI is basically random, just exploring
+- **10,000-30,000 steps**: It starts to figure out basic patterns
+- **30,000+ steps**: It gets good at the specific task
 
-1. **Console Output**: Watch real-time metrics
-   ```
-   | time/              |      |
-   |    fps             | 1089 |
-   |    iterations      | 1    |
-   |    time_elapsed    | 3    |
-   |    total_timesteps | 4096 |
-   | train/             |      |
-   |    entropy_loss    | -1.1 |
-   |    policy_loss     | 0.01 |
-   |    value_loss      | 0.05 |
-   ```
+You can monitor progress in real-time by running:
+```bash
+tensorboard --logdir=logs/
+```
+Then open http://localhost:6006 in your browser. You'll get nice graphs showing how the AI's performance improves over time.
 
-2. **TensorBoard**: Visualize training curves
-   ```bash
-   tensorboard --logdir=logs/
-   ```
+## Tweaking the training
 
-3. **Saved Models**: Find checkpoints in `train/` directory
-
-### Training Tips
-
-- **Start Small**: Begin with 10,000 timesteps to test setup
-- **Monitor Rewards**: `ep_rew_mean` should increase over time
-- **Adjust Learning Rate**: Reduce if training is unstable
-- **Use GPU**: Training is much faster with CUDA support
-
-### Hyperparameter Tuning
+If you want to experiment with different settings, here are the main knobs you can turn:
 
 ```python
 model = PPO('CnnPolicy', env,
-    learning_rate=0.0003,     # Higher learning rate
-    n_steps=2048,             # Smaller batch size  
-    batch_size=64,            # Mini-batch size
-    n_epochs=10,              # Optimization epochs
-    gamma=0.99,               # Discount factor
-    gae_lambda=0.95,          # GAE parameter
-    clip_range=0.2,           # PPO clipping
-    ent_coef=0.01,           # Entropy coefficient
-    vf_coef=0.5,             # Value function coefficient
-    verbose=1
+    learning_rate=0.0001,     # How fast the AI learns (smaller = more stable)
+    n_steps=4096,             # How many game steps before updating the brain
+    total_timesteps=100000,   # Total training duration
+    verbose=1                 # How much output you want to see
 )
 ```
 
-## 📊 Results
+I've found these settings work pretty well, but feel free to experiment. If training seems unstable (rewards jumping around wildly), try reducing the learning rate. If it's learning too slowly, you can increase it a bit.
 
-### Performance Benchmarks
+## Results I've gotten
 
-| Scenario | Training Steps | Mean Reward | Success Rate |
-|----------|---------------|-------------|--------------|
-| Basic | 40,000 | 85.2 ± 12.3 | 89% |
-| Defend Center | 60,000 | 156.7 ± 25.1 | 76% |
+After about 40,000 training steps on the basic scenario, my AI can hit targets pretty consistently - around 89% success rate, which is way better than my own DOOM skills honestly.
 
-### Learning Curves
+The "defend the center" scenario is harder - it takes about 60,000 steps to get good performance, but once trained it can handle multiple enemies pretty well.
 
-The agent typically shows:
-- **Phase 1 (0-10k)**: Random exploration, negative rewards
-- **Phase 2 (10k-30k)**: Basic strategy development  
-- **Phase 3 (30k+)**: Fine-tuning and optimization
+## How it actually works
 
-### Comparison with Baselines
+The technical details are pretty cool if you're into that sort of thing:
 
-| Method | Basic Scenario | Defend Center |
-|--------|---------------|---------------|
-| Random | -15.2 | -45.8 |
-| **PPO (Ours)** | **85.2** | **156.7** |
-| DQN | 72.1 | 134.2 |
-| A2C | 68.9 | 128.5 |
+The AI sees the game as 100x160 pixel grayscale images (I convert from color to save memory). It processes these through a convolutional neural network - basically the same type of network that's used for image recognition.
 
-## 🔬 Technical Details
+The network has two "heads":
+- **Actor**: Decides what action to take (move left, right, or shoot)  
+- **Critic**: Estimates how good the current situation is
 
-### Environment Specifications
+The PPO algorithm balances exploration (trying new things) with exploitation (doing what it knows works). It's pretty elegant - the AI naturally learns to be more conservative when it's doing well and more exploratory when it's struggling.
 
-- **Observation Space**: `Box(0, 255, (100, 160, 1), uint8)`
-- **Action Space**: `Discrete(3)` - [Move Left, Move Right, Shoot]
-- **Reward Range**: [-∞, +∞] (typically -100 to +200)
-- **Frame Skip**: 4 frames per action
-- **Image Processing**: RGB → Grayscale → Resize → Normalize
+## If you want to contribute
 
-### PPO Implementation
+I'd love to see what improvements people come up with! Some ideas I've been thinking about:
+- More complex DOOM scenarios
+- Different neural network architectures  
+- Comparison with other RL algorithms
+- Better reward shaping
 
-- **Algorithm**: Proximal Policy Optimization
-- **Policy**: CNN-based Actor-Critic
-- **Optimizer**: Adam with learning rate 0.0001
-- **Clipping**: ε = 0.2
-- **GAE**: λ = 0.95, γ = 0.99
+If you want to contribute, just fork the repo, make your changes, and send a pull request. The usual GitHub workflow.
 
-### Neural Network Architecture
+---
 
-```
-Input (100×160×1) 
-    ↓
-Conv2D(32, 8×8, stride=4) + ReLU
-    ↓  
-Conv2D(64, 4×4, stride=2) + ReLU
-    ↓
-Conv2D(64, 3×3, stride=1) + ReLU  
-    ↓
-Flatten → Dense(512) + ReLU
-    ↓
-┌─ Actor Head → Dense(3) [Action Probabilities]
-└─ Critic Head → Dense(1) [Value Estimate]
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the Repository**
-2. **Create Feature Branch**: `git checkout -b feature/amazing-feature`
-3. **Commit Changes**: `git commit -m 'Add amazing feature'`
-4. **Push to Branch**: `git push origin feature/amazing-feature`
-5. **Open Pull Request**
-
-### Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/yourusername/SOC-Abhinav0358.git
-cd SOC-Abhinav0358
-
-# Install development dependencies
-pip install -e .
-pip install pytest black flake8
-
-# Run tests
-pytest tests/
-
-# Format code
-black .
-flake8 .
-```
-
-
-<div align="center">
-  <p><strong>🎮 Happy Training! 🤖</strong></p>
-  <p>Made with ❤️ for the AI community by Abhinav</p>
-</div>
+*Built with curiosity and way too much coffee ☕*  

@@ -8,9 +8,6 @@ from gymnasium.spaces import Discrete, Box
 import cv2
 
 class ViZDoomGym(Env):
-    """
-    ViZDoom Gym Environment Wrapper
-    """
     
     def __init__(self, render=False):
         super().__init__()
@@ -28,7 +25,6 @@ class ViZDoomGym(Env):
         self.action_space = Discrete(3) 
 
     def reset(self, seed=None, options=None):
-        # Handle seeding if provided
         if seed is not None:
             np.random.seed(seed)
             
@@ -36,16 +32,12 @@ class ViZDoomGym(Env):
         state = self.game.get_state().screen_buffer
         observation = self.grayscale(state)
         
-        # Return observation and info dict (modern Gymnasium format)
         info = {}
         return observation, info
 
     def step(self, action):
-        # Specify action and take step 
         actions = np.identity(3)
-        reward = self.game.make_action(actions[action], 4) 
-
-        # Get all the other stuff we need to return 
+        reward = self.game.make_action(actions[action], 4)  
         if self.game.get_state(): 
             state = self.game.get_state().screen_buffer
             state = self.grayscale(state)
@@ -57,15 +49,14 @@ class ViZDoomGym(Env):
         
         info = {"info":info}
         
-        # Modern Gymnasium API: separate terminated and truncated
         terminated = self.game.is_episode_finished()
-        truncated = False  # ViZDoom doesn't typically truncate episodes
+        truncated = False  
         
         return state, reward, terminated, truncated, info 
-    def render(self, mode='human'):
-        if self.game is None:
-            raise RuntimeError("Environment not initialized.")
-        return self.game.render(mode)
+    # def render(self, mode='human'):
+    #     if self.game is None:
+    #         raise RuntimeError("Environment not initialized.")
+    #     return self.game.render(mode)
 
     def close(self):
         self.game.close()
